@@ -1,0 +1,1125 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Species.master.cs" Inherits="species.Species" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title>SAEON Species Database</title>
+    <link href="Content/bootstrap.css?v=2" rel="stylesheet" />
+    <link href="Content/bootstrap-responsive.css" rel="stylesheet" />
+    <link href="Content/bootstrap-theme.css" rel="stylesheet" />
+    <link href="Content/bootstrap-modal.css" rel="stylesheet" />
+    <link href="Content/datepicker.css" rel="stylesheet" />
+    <link href="Content/bootstrap-timepicker.css" rel="stylesheet" />
+    <link href="Content/generic.css" rel="stylesheet" />
+
+    <script type="text/javascript" src="Scripts/jquery-2.1.3.js"></script>
+    <script type="text/javascript" src="Scripts/bootstrap.js?v=2"></script>
+    
+    <script type="text/javascript" src="Scripts/busyindicator.js"></script>
+    <script type="text/javascript" src="Scripts/bootstrap-modal.js"></script>
+    <script type="text/javascript" src="Scripts/bootstrap-modalmanager.js"></script>
+    <script type="text/javascript" src="Scripts/jquery.md5.js"></script>
+    <script type="text/javascript" src="Scripts/jquery.bootpag.min.js"></script>
+    <script type="text/javascript" src="Scripts/bootstrap-datepicker.js?v=2"></script>
+    <script type="text/javascript" src="Scripts/dateformat.js"></script>
+    <script type="text/javascript" src="Scripts/bootstrap-timepicker.js"></script>
+
+    <script type="text/javascript" src="jqueryui/jquery-ui.js"></script>
+
+
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+
+    <style type="text/css">
+
+    </style>
+
+    <script type="text/javascript">
+
+        var masterGlobal = {};
+        var loadString = '<%=loadString%>';
+
+        String.prototype.replaceAll = function (str1, str2, ignore) {
+            return this.replace(new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g, "\\$&"), (ignore ? "gi" : "g")), (typeof (str2) == "string") ? str2.replace(/\$/g, "$$$$") : str2);
+        }
+
+
+
+        function login() {
+            $('#dlgLogin').modal();
+            $('#btnLoginOK').click(function () {
+                $('#usr').val($('#loginUsername').val());
+                $('#psw').val($.md5($('#loginPassword').val()));
+                formLogin.submit();
+            });
+        }
+
+        function logout() {
+            $('#usr').val('-logout-');
+            formLogin.submit();
+        }
+
+        
+
+
+        $(document).ready(function () {
+            var url = window.location.pathname;
+            var filename = url.substring(url.lastIndexOf('/') + 1);
+            if (filename == '')
+                filename = '.';
+            $('.mainnavbar').find('a[href="' + filename + '"]').parents('li').addClass('active');
+
+            if (loadString != "")
+                alert(loadString);
+        });
+
+
+
+        function selectSpecies(name, rf) {
+
+            function selectSpeciesLoaded() {
+                $('.spesiesRes').off();
+                $('.spesiesRes').click(function () {
+                    $('#dlgSelectSpecies').modal('toggle');
+                    var name = $(this).attr("href");
+                    var id = this.id.substring(2);
+                    if (rf != null) {
+                        rf(id, name);
+                    }
+                    else {
+                        alert(id);
+                        alert(name);
+                    }
+                    return false;
+                });
+
+
+
+            }
+
+            function findSpecies(name) {
+                $('#speciesSelectTB').load('ajaxSpecies.ashx?mode=slist&name=' + escape(name), selectSpeciesLoaded);
+            }
+
+            $('#dlgSelectSpecies').modal();
+            $('#findSelectSB').val(name);
+            findSpecies(name);
+
+            $('.speciesSelectSB').off();
+            $('.speciesSelectSB').click(function () {
+                var name = $('#findSelectSB').val();
+                findSpecies(name);
+            });
+        }
+
+        function selectTaxonomy(rf) {
+
+            function loadTXBox(code) {
+                $('#TXValue').html('');
+                for (var i = 0; i < code.length; i++) {
+                    var item = code[i];
+                    $('#TXValue').append(new Option(item.name, item.id));
+                }
+            }
+
+            function loadTX() {
+                var rank = $('#TXRank').val();
+                var url = 'ajaxSpecies.ashx?mode=loadTaxon&rank=' + rank;
+                $.getJSON(url, null, loadTXBox);
+            }
+
+            $('#TXRank').off();
+            $('#TXRank').change(loadTX);
+            loadTX();
+
+            $('#buttonSelectTaxon').off();
+            $('#buttonSelectTaxon').click(function () {
+                var rank = $("#TXRank option:selected").text();
+                var name = $("#TXValue option:selected").text();
+                var text = rank + ' -> ' + name;
+                var id = $("#TXValue").val();
+                rf(id, text);
+                $('#dlgSelectTaxonomy').modal('toggle');
+                // 
+            });
+
+            $('#dlgSelectTaxonomy').modal();
+
+
+        }
+
+        function selectListVessel(doneFunc) {
+            var url = 'ajax.aspx?mode=loadcruises&vessel=' + $('#xtVessel').val();
+            $.ajax(url).done(function (code) {
+                var data = $.parseJSON(code);
+                var combo = $('#xtCruise');
+                combo.empty();
+                for (var i = 0; i < data.length; i++) {
+                    var item = data[i];
+                    var selected = (i == 0) ? ' selected ' : '';
+                    combo.append('<option ' + selected + ' value="' + item.id + '">' + item.name + ' </option');
+                }
+                if (doneFunc != null)
+                    doneFunc();
+            })
+        }
+
+        function selectListCruise() {
+            var url = 'ajax.aspx?mode=loadtransects&cruise=' + $('#xtCruise').val();
+
+            $.ajax(url).done(function (code) {
+                var data = $.parseJSON(code);
+                var combo = $('#xtTransect');
+                combo.empty();
+                for (var i = 0; i < data.length; i++) {
+                    var item = data[i];
+                    combo.append('<option value="' + item.id + '">' + item.name + ' </option');
+                }
+            })
+        }
+
+        function moveListItemsXT(dir, update) {
+            if (update == null)
+                update = true;
+
+            var listbox1 = 'xtTransect';
+            var mode = $('#selectByMode').val();
+            if (mode == 'vessel')
+                listbox1 = 'xtVessel';
+            if (mode == 'cruise')
+                listbox1 = 'xtCruise';
+
+
+            if (dir[0] == '>') {
+                lb1 = listbox1;
+                lb2 = 'xtSelTrans';
+            }
+            else {
+                lb1 = 'xtSelTrans';
+                lb2 = listbox1;
+            }
+
+            var selector = (dir.length == 1) ? ' :selected' : ' > option';
+            $('#' + lb1 + selector).each(function (i, selected) {
+                $('#' + lb2).append(selected);
+            });
+
+            if (update == true) {
+                saveTransectList();
+            }
+
+            $('#' + lb2).append($('#' + lb2 + " option").remove().sort(function (a, b) {
+                var at = $(a).text(), bt = $(b).text();
+                return (at > bt) ? 1 : ((at < bt) ? -1 : 0);
+            }));
+
+
+        }
+
+        function select(key, max, sel) {
+            for (var i = 1; i <= max; i++) {
+                document.getElementById(key + i).checked = sel;
+            }
+            testFilterFunc();
+        }
+
+
+        function testFilterFunc() {
+            var params = '';
+            params += '&date1=' + escape($('#ftDateStart').val());
+            params += '&date2=' + escape($('#ftDateEnd').val());
+            params += '&spatfilter=' + escape($('#spatFilter').val());
+            params += '&x1=' + escape($('#coordX1').val());
+            params += '&y1=' + escape($('#coordY1').val());
+            params += '&x2=' + escape($('#coordX2').val());
+            params += '&y2=' + escape($('#coordY2').val());
+
+            params += '&dep1=' + escape($('#dep1').val());
+            params += '&dep2=' + escape($('#dep2').val());
+
+
+
+            masterGlobal.filterRefFunc(params);
+        }
+
+        function showFilter(f) {
+            alert(f);
+        }
+
+        function onErrorClose() {
+            if (masterGlobal.retfunc != null)
+                masterGlobal.retfunc();
+        }
+
+
+        function error(msg, retfunc) {
+            masterGlobal.retfunc = retfunc;
+            $('#error-msg').html(msg);
+            $('#dlgError').modal();
+        }
+
+
+        function filterDialog(retFunc) {
+            masterGlobal.filterRefFunc = retFunc;
+            masterGlobal.boundsOK = true;
+            debugger;
+
+
+            var datePickerOptions = {
+                format: 'yyyy-mm-dd',
+                autoclose: true,
+                clearBtn: true,
+                todayBtn: true,
+                todayHighlight: true
+            }
+
+            $('#ftDateStart').datepicker(datePickerOptions).on('changeDate', testFilterFunc);
+            $('#ftDateEnd').datepicker(datePickerOptions).on('changeDate', testFilterFunc);
+            $('.fmonth').click(testFilterFunc);
+            $('.fhour').click(testFilterFunc);
+            $('#dep1').change(testFilterFunc);
+            $('#dep2').change(testFilterFunc);
+            
+            $('#dlgFilter').modal();
+
+            initDragMap();
+
+        }
+
+        function initDragMap() {
+            var url = 'dragmap.aspx';
+            url += '?x1=' + $('#coordX1').val();
+            url += '&y1=' + $('#coordY1').val();
+            url += '&x2=' + $('#coordX2').val();
+            url += '&y2=' + $('#coordY2').val();
+            url += '&cx=' + $('#coordCX').val();
+            url += '&cy=' + $('#coordCY').val();
+            url += '&z=' + $('#coordZM').val();
+            $('#dragmap').attr('src', url);
+        }
+
+        function round(num, dec) {
+            return Math.round(num * dec) / dec;
+        }
+
+        function setCoords(x1, y1, x2, y2, init) {
+            if (masterGlobal.boundsOK == true) {
+                $('#coordX1').val(round(x1, 1e6));
+                $('#coordY1').val(round(y1, 1e6));
+                $('#coordX2').val(round(x2, 1e6));
+                $('#coordY2').val(round(y2, 1e6));
+                testFilterFunc();
+            }
+        }
+
+        function updateBounds(x, y, z) {
+            if (masterGlobal.boundsOK == true) {
+                debugger;
+
+                $('#coordCX').val(round(x, 1e6));
+                $('#coordCY').val(round(y, 1e6));
+                $('#coordZM').val(z);
+            }
+        }
+
+        function hideFilterDialog() {
+            debugger;
+            masterGlobal.boundsOK = false;
+            $('#dlgFilter').modal('toggle');
+        }
+
+
+
+        function saveSpeciesList() {
+            var species = [];
+            $('#lbSelected option').each(function (i, selected) {
+                species.push(selected.value);
+            });
+            masterGlobal.saveFunc(species);
+        }
+
+        function saveTransectList() {
+            var transects = [];
+            $('#xtSelTrans option').each(function (i, selected) {
+                transects.push(selected.value);
+            });
+            masterGlobal.saveFunc(transects);
+        }
+
+        function initJS() {
+
+            $('.moveBtn').off();
+            $('.moveBtn').click(function () {
+                var val = this.value;
+                moveListItems(val);
+            });
+
+        }
+
+        function showSpeciesSelect(saveFunc) {
+            masterGlobal.saveFunc = saveFunc;
+            $('#dlgSelectSpiecies').modal();
+            initJS();
+        }
+
+
+        function doSelectByMode() {
+            moveListItemsXT('<<', false);
+
+            $('#xtVessel').attr('size', 1);
+            $('#xtCruise').attr('size', 1);
+            $('#vesselModeOnly').show();
+            $('#cruiseModeOnly').show();
+            var mode = 'cruise';// $('#selectByMode').val();
+            if (mode == 'vessel') {
+                $('#vesselModeOnly').hide();
+                $('#xtVessel').attr('size', 20);
+            }
+
+            if (mode == 'cruise') {
+                $('#cruiseModeOnly').hide();
+                $('#xtCruise').attr('size', 20);
+
+            }
+        }
+
+        function initJSXT() {
+
+            $('.moveBtnXT').off();
+            $('.moveBtnXT').click(function () {
+                var val = this.value;
+                moveListItemsXT(val);
+            });
+        }
+
+
+        function moveListItems(dir) {
+            if (dir[0] == '>') {
+                lb1 = 'lbAvailable';
+                lb2 = 'lbSelected';
+            }
+            else {
+                lb1 = 'lbSelected';
+                lb2 = 'lbAvailable';
+            }
+
+            var selector = (dir.length == 1) ? ' :selected' : ' > option';
+            $('#' + lb1 + selector).each(function (i, selected) {
+                $('#' + lb2).append(selected);
+            });
+
+
+            saveSpeciesList();
+
+            $('#' + lb2).append($('#' + lb2 + " option").remove().sort(function (a, b) {
+                var at = $(a).text(), bt = $(b).text();
+                return (at > bt) ? 1 : ((at < bt) ? -1 : 0);
+            }));
+
+
+        }
+
+
+        var firstInit = true;
+
+
+        function dlgSelectTransect(saveFunc) {
+            masterGlobal.saveFunc = saveFunc;
+            $('#dlgSelectTransect').modal();
+
+            if (firstInit == true) {
+                $('#xtVessel').change(selectListVessel);
+                $('#xtCruise').change(selectListCruise);
+                selectListVessel();
+
+                $('#selectByMode').change(doSelectByMode);
+                doSelectByMode();
+
+                initJSXT();
+                firstInit = false;
+            }
+        }
+
+
+        function getItemName(caption, label, defval, defsep, retfunc, options) {
+            masterGlobal.startValue = defval;
+            masterGlobal.retfunc = retfunc;
+            $('#dlgItemName').modal();
+            $('#dlgItemNameCaption').html(caption);
+            $('#dlgItemNameLabel').html(label);
+            $('#itemNameCtrl').val(defval);
+            $('#itemSeperator').val(defsep);
+            setTimeout(function () {
+                $('#itemNameCtrl').focus();
+            }, 1000);
+        }
+
+        function acceptItemName() {
+            var name = $('#itemNameCtrl').val();
+            name = name.replaceAll('<', '&lt;');
+            name = name.replaceAll('>', '&gt;');
+            var sept = $('#itemSeperator').val();
+            masterGlobal.retfunc(name, sept);
+        }
+
+        // SELECT STATIONS //
+        var stationInit = true;
+
+        function dlgSelectStations(saveFunc) {
+            masterGlobal.saveFunc = saveFunc;
+            $('#dlgSelectStation').modal();
+            if (stationInit == true) {
+                initJSST();
+                stationInit = false;
+            }
+        }
+
+        function moveListItemsST(dir, update) {
+            if (update == null)
+                update = true;
+
+            if (dir[0] == '>') {
+                lb1 = 'list1ST';
+                lb2 = 'list2ST';
+            }
+            else {
+                lb1 = 'list2ST';
+                lb2 = 'list1ST';
+            }
+
+            var selector = (dir.length == 1) ? ' :selected' : ' > option';
+            $('#' + lb1 + selector).each(function (i, selected) {
+                $('#' + lb2).append(selected);
+            });
+
+            if (update == true) {
+                saveStationList();
+            }
+
+            $('#' + lb2).append($('#' + lb2 + " option").remove().sort(function (a, b) {
+                var at = $(a).text(), bt = $(b).text();
+                return (at > bt) ? 1 : ((at < bt) ? -1 : 0);
+            }));
+
+
+        }
+
+        function initJSST() {
+
+            $('.moveBtnST').off();
+            $('.moveBtnST').click(function () {
+                var val = this.value;
+                moveListItemsST(val);
+            });
+        }
+
+        function saveStationList() {
+            var stations = [];
+            $('#list2ST option').each(function (i, selected) {
+                stations.push(selected.value);
+            });
+            masterGlobal.saveFunc(stations);
+        }
+
+
+
+
+            // setTimeout("selectSpecies();", 500);
+
+    </script>
+
+</head>
+<body>
+
+        <div class="container mainnavbar">
+            <img src="images/header.png" />
+
+            <!-- Static navbar -->
+            <nav class="navbar navbar-default">
+
+                <div class="container-fluid">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                    </div>
+
+                    <div id="navbar" class="navbar-collapse collapse">
+                        <ul class="nav navbar-nav">
+                            <li class=""><a href=".">Home</a></li>
+                            <li class=""><a href="map.aspx">Map</a></li>
+                            <% if (loggedIn == true) { %>
+                            <li><a href="survey.aspx">Surveys</a></li>
+                            <li><a href="stations.aspx">Stations</a></li>
+                            <li><a href="events.aspx">Events</a></li>
+                            <li><a href="species.aspx">Species</a></li>
+                            <li><a href="media.aspx">Media</a></li>
+                            <li><a href="templates.aspx">Templates</a></li>
+                            <li><a href="catalouge.aspx">Catalogues</a></li>
+                            
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Admin <span class="caret"></span></a>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a href="adminUnits.aspx">Units</a></li>
+                                    <li><a href="adminIndicators.aspx">Indicators</a></li>
+                                    <li><a href="adminSurveyTypes.aspx">Survey Types</a></li>
+                                    <li><a href="adminVocabularies.aspx">Vocabularies</a></li>
+                                    <li class="nav-divider"></li>
+                                    <li><a href="import.aspx">Import data</a></li>
+
+                                </ul>
+                            </li>
+
+
+                            <% } %>
+                        </ul>
+
+                        <ul class="nav navbar-nav navbar-right">
+                            <% if (loggedIn == false) { %>
+                            <li><a id="#btnLogin" onclick="login(); return false;" href="./">Login</a></li>
+                            <% } else { %>
+                            <li><a id="A1" onclick="logout(); return false;" href="./">Log out</a></li>
+                            <% } %>
+                        </ul>
+                    </div>
+                    <!--/.nav-collapse -->
+                </div>
+            </nav>
+
+            <div>
+                <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+                </asp:ContentPlaceHolder>
+            </div>
+
+
+            <!-- error dialog -->
+            <div id='dlgError' class='modal'>
+                <div class='modal-dialog' style="width: 400px">
+                    <div class='modal-content'>
+                        <div class='modal-header'>
+                            <button type='button' class='close' data-dismiss='modal'><span aria-hidden='true'>&times;</span><span class='sr-only'>Close</span></button>
+                            <h4 class='modal-title'>SSDB</h4>
+                        </div>
+                        <form onsubmit="doRegister(event);">
+                            <div class='modal-body'>
+                                <div id="error-msg"></div>
+                            </div>
+                            <div class='modal-footer'>
+                                <button type='button' class='btn' data-dismiss='modal' style="width: 80px" onclick="onErrorClose();">Close</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- item name dialog -->
+            <div id='dlgItemName' class='modal'>
+                <div class='modal-dialog' style="width: 400px">
+                    <div class='modal-content'>
+                        <div class='modal-header'>
+                            <button type='button' class='close' data-dismiss='modal'><span aria-hidden='true'>&times;</span><span class='sr-only'>Close</span></button>
+                            <h5 class='modal-title' id="dlgItemNameCaption">Save Search</h5>
+                        </div>
+                        <div class='modal-body'>
+                            <div id="dlgItemNameLabel">Save search as..</div>
+                            <input type="text" class="form-control" id="itemNameCtrl" />
+                            <br />
+                            <div id="Div1">Field Seperator</div>
+                            <input type="text" class="form-control" id="itemSeperator" />
+
+                        </div>
+                        <div class='modal-footer'>
+                            <button type='button' class='btn btn-sm btn-default' data-dismiss='modal' style="width: 80px" onclick="acceptItemName();">OK</button>
+                            <button type='button' class='btn btn-sm btn-default' data-dismiss='modal' style="width: 80px">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <!-- select species dialog -->
+            <div id='dlgSelectSpecies' class='modal'>
+                <div class='modal-dialog'>
+                    <div class='modal-content'>
+                        <div class='modal-header'>
+                            <button type='button' class='close' data-dismiss='modal'><span aria-hidden='true'>&times;</span><span class='sr-only'>Close</span></button>
+                            <h4 class='modal-title'>Select Species</h4>
+                        </div>
+                        <div class='modal-body'>
+                            <div class='input-group'>
+                                <input type='text' class='form-control' placeholder='Search' id='findSelectSB' name='find' />
+                                <div class='input-group-btn speciesSelectSB'>
+                                    <button class='btn btn-default' type='submit'><i class='glyphicon glyphicon-search'></i></button>
+                                </div>
+                            </div>
+                            <br />
+
+                            <div style="height: 300px; overflow-y: auto">
+
+                                <table class="table" style="width: 100%">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 300px">Common Name</th>
+                                            <th style="width: 300px">Scientific Name</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="speciesSelectTB">
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+
+                        <div class='modal-footer'>
+                            <button type='button' class='btn btn-default' data-dismiss='modal'>Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- select taxonomy dialog -->
+            <div id='dlgSelectTaxonomy' class='modal'>
+                <div class='modal-dialog'>
+                    <div class='modal-content'>
+                        <div class='modal-header'>
+                            <button type='button' class='close' data-dismiss='modal'><span aria-hidden='true'>&times;</span><span class='sr-only'>Close</span></button>
+                            <h4 class='modal-title'>Select Taxonomy</h4>
+                        </div>
+                        <div class='modal-body'>
+                            <strong>Rank:</strong><br />
+                            <select id="TXRank" class="form-control">
+                                <% WriteRanks(); %>
+                            </select>
+                            <br />
+                            <strong>Taxonomy:</strong><br />
+                            <select id="TXValue" class="form-control">
+                            </select>
+
+                        </div>
+
+                        <div class='modal-footer'>
+                            <button type='button' class='btn btn-default' id="buttonSelectTaxon">Select</button>
+                            <button type='button' class='btn' data-dismiss='modal'>Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- select taxonomy dialog -->
+
+            <!-- select transect dialog -->
+            <div id='dlgSelectTransect' class='modal'>
+                <div class='modal-dialog selSpeciesDialog'>
+                    <div class='modal-content'>
+                        <div class='modal-header'>
+                            <button type='button' class='close' data-dismiss='modal'><span aria-hidden='true'>&times;</span><span class='sr-only'>Close</span></button>
+                            <h4 class='modal-title' id="H3">Select Survey</h4>
+                        </div>
+                        <div class='modal-body'>
+                            <div class="hidden">
+                                <select class="form-control" id="selectByMode">
+                                    <option value="cruise">Select By Cruise</option>
+                                    <option value="vessel">Select By Vessel</option>
+                                    <option value="transect">Select By Transect</option>
+                                </select>
+                                <br />
+                            </div>
+                            <table>
+                                <tr>
+                                    <td style="vertical-align: top">
+                                        <div class="hidden">
+                                        Vessel
+                                            <br />
+                                            <select class="form-control" style="width: 300px" id="xtVessel" ondblclick="moveListItemsXT('>');">
+                                                <% writeVesselList(); %>
+                                            </select>
+                                        </div>
+                                        <div id="vesselModeOnly">
+                                            <div style="height: 10px"></div>
+                                            Survey
+                                            <br />
+                                            <select class="form-control" style="width: 300px" id="xtCruise" ondblclick="moveListItemsXT('>');">
+                                            </select>
+                                            <div id="cruiseModeOnly">
+                                                <div style="height: 10px"></div>
+                                                Available Transects
+                                                <select size="13" multiple="multiple"  class="form-control" style="width: 300px" id="xtTransect" ondblclick="moveListItemsXT('>');">
+                                                </select>
+                                            </div>
+                                        
+                                        </div>
+                                        <br />
+                                    </td>
+                                    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                    <td>
+                                        <input type="button" class="btn moveBtnXT" style="width: 60px;" value=">>" title="Select All" />
+                                        <div style="height: 10px"></div>
+                                        <input type="button" class="btn moveBtnXT" style="width: 60px;" value=">" />
+                                        <div style="height: 10px"></div>
+                                        <input type="button" class="btn moveBtnXT" style="width: 60px;" value="<" />
+                                        <div style="height: 10px"></div>
+                                        <input type="button" class="btn moveBtnXT" style="width: 60px;" value="<<" title="Select None" />
+
+                                    </td>
+                                    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                    <td>Selected Items<br />
+                                        <select size="20" class="form-control" style="width: 300px" multiple="multiple" id="xtSelTrans" ondblclick="moveListItemsXT('<');">
+                                        </select>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class='modal-footer'>
+                            <button type='button' class='btn' data-dismiss='modal' style="width: 80px">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- select station dialog -->
+            <div id='dlgSelectStation' class='modal'>
+                <div class='modal-dialog selSpeciesDialog'>
+                    <div class='modal-content'>
+                        <div class='modal-header'>
+                            <button type='button' class='close' data-dismiss='modal'><span aria-hidden='true'>&times;</span><span class='sr-only'>Close</span></button>
+                            <h4 class='modal-title' id="H25">Select Stations</h4>
+                        </div>
+                        <div class='modal-body'>
+                            <table>
+                                <tr>
+                                    <td style="vertical-align: top">
+                                        <div id="Div3">
+                                            <div id="Div4">
+                                                <div style="height: 10px"></div>
+                                                Available Stations
+                                                <select size="20" multiple="multiple"  class="form-control" style="width: 300px" id="list1ST" ondblclick="moveListItemsST('>');">
+                                                    <% writeStationList(); %>
+                                                </select>
+                                            </div>
+                                        
+                                        </div>
+                                        <br />
+                                    </td>
+                                    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                    <td>
+                                        <input type="button" class="btn moveBtnST" style="width: 60px;" value=">>" title="Select All" />
+                                        <div style="height: 10px"></div>
+                                        <input type="button" class="btn moveBtnST" style="width: 60px;" value=">" />
+                                        <div style="height: 10px"></div>
+                                        <input type="button" class="btn moveBtnST" style="width: 60px;" value="<" />
+                                        <div style="height: 10px"></div>
+                                        <input type="button" class="btn moveBtnST" style="width: 60px;" value="<<" title="Select None" />
+
+                                    </td>
+                                    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                    <td>Selected Items<br />
+                                        <select size="20" class="form-control" style="width: 300px" multiple="multiple" id="list2ST" ondblclick="moveListItemsST('<');">
+                                        </select>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class='modal-footer'>
+                            <button type='button' class='btn' data-dismiss='modal' style="width: 80px">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- select species dialog -->
+            <div id='dlgSelectSpiecies' class='modal'>
+                <div class='modal-dialog selSpeciesDialog'>
+                    <div class='modal-content'>
+                        <div class='modal-header'>
+                            <button type='button' class='close' data-dismiss='modal'><span aria-hidden='true'>&times;</span><span class='sr-only'>Close</span></button>
+                            <h4 class='modal-title' id="H1">Select Species</h4>
+                        </div>
+                        <div class='modal-body'>
+                            <table>
+                                <tr>
+                                    <td>Available Species<br />
+                                        <select size="20" class="form-control" style="width: 300px" multiple="multiple" id="lbAvailable" ondblclick="moveListItems('>');">
+                                            <% writeSpeciesList(); %>
+                                        </select>
+                                    </td>
+                                    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                    <td>
+                                        <input type="button" class="btn moveBtn" style="width: 60px;" value=">>" />
+                                        <div style="height: 10px"></div>
+                                        <input type="button" class="btn moveBtn" style="width: 60px;" value=">" />
+                                        <div style="height: 10px"></div>
+                                        <input type="button" class="btn moveBtn" style="width: 60px;" value="<" />
+                                        <div style="height: 10px"></div>
+                                        <input type="button" class="btn moveBtn" style="width: 60px;" value="<<" />
+
+                                    </td>
+                                    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                    <td>Selected Species<br />
+                                        <select size="20" class="form-control" style="width: 300px" multiple="multiple" id="lbSelected" ondblclick="moveListItems('<');">
+                                        </select>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class='modal-footer'>
+                            <button type='button' class='btn' data-dismiss='modal' style="width: 80px">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+    <form id="formLogin" name="formLogin" method="post">
+        <input type="hidden" name="psw" id="psw" />
+        <input type="hidden" name="usr" id="usr" />
+
+            
+            <div id='dlgLogin' class='modal'>
+                
+                <div class='modal-dialog'>
+                    <div class='modal-content'>
+                        <div class='modal-header'>
+                            <button type='button' class='close' data-dismiss='modal'><span aria-hidden='true'>&times;</span><span class='sr-only'>Close</span></button>
+                            <h4 class='modal-title'>Login</h4>
+                        </div>
+                        <div class='modal-body'>
+                            <strong>User Name:</strong><br />
+                            <input name="usr" id="loginUsername" type="text" class="form-control" value="admin" />
+                            <br />
+                            <strong>Password:</strong><br />
+                            <input id="loginPassword" type="password" class="form-control" value="ssdb" />
+                        </div>
+
+                        <div class='modal-footer'>
+                            <button type='button' class='btn btn-default' id="btnLoginOK" style="width: 80px">Ok</button>
+                            <button type='button' class='btn' data-dismiss='modal' style="width: 80px">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /container -->
+
+        <!-- filter dialog -->
+        <div id='dlgFilter' class='modal'>
+            <div class='modal-dialog selSpeciesDialog' style="width: 860px">
+                <div class='modal-content'>
+                    <div class='modal-header'>
+                        <button type='button' class='close' onclick="hideFilterDialog();"><span aria-hidden='true'>&times;</span><span class='sr-only'>Close</span></button>
+                        <h4 class='modal-title' id="H2">Filters</h4>
+                    </div>
+                    <div class='modal-body'>
+
+                        <ul class="nav nav-tabs nav-tabs-sm" role="tablist" id="restabs">
+                            <li role="presentation" class="active"><a href="#tabTemporal" aria-controls="tabTemporal" role="tab" id="tabTemporalTab" data-toggle="tab">General Filters</a></li>
+                            <li role="presentation"><a onclick="initDragMap();" href="#tabSpatial" aria-controls="tabSpatial" role="tab" id="tabSpatialTab" data-toggle="tab">Spatial Filters</a></li>
+                        </ul>
+
+                        <!-- Tab panes -->
+                        <div class="tab-content">
+                            <!-- temporal tab -->
+                            <br />
+                            <div role="tabpanel" class="tab-pane tabBody active" id="tabTemporal" >
+                                <table style="width: 100%">
+                                    <tr>
+                                        <td style="width: 50%">
+                                            Start Date:
+                                            <br />
+                                            <input type="text" class="form-control" id="ftDateStart" />
+                                        </td>
+                                        <td>&nbsp;&nbsp;&nbsp;</td>
+                                        <td style="width: 50%">
+                                            End Date:
+                                            <br />
+                                            <input type="text" class="form-control" id="ftDateEnd"  />
+                                        </td>
+                                    </tr>
+                                </table>
+                                <br />
+                                <table style="width: 100%">
+                                    <tr>
+                                        <td style="width: 50%">
+                                            Minimum Depth (m):<br />
+                                            <input id="dep1" type="number" class="form-control" value="0" />
+                                        </td>
+                                        <td>&nbsp;&nbsp;&nbsp;</td>
+                                        <td style="width: 50%">
+                                            Maximum Depth (m):<br />
+                                            <input id="dep2" type="number" class="form-control" value="2000" />
+                                        </td>
+                                    </tr>
+                                </table>
+
+
+                                <!--
+                                Hours <a href="#" onclick="return select('h', 24, true);">Select All</a> / <a href="#" onclick="return select('h', 24, false);">Select None</a><br /><br />
+                                <table style="width: 100%">
+                                    <tr>
+                                        <td style="width: 16.66%">
+                                            <label><input class="fhour" id="Checkbox1" type="checkbox" checked="checked" />&nbsp;01 AM</label>
+                                        </td>
+                                        <td style="width: 16.66%">
+                                            <label><input class="fhour" id="Checkbox2" type="checkbox" checked="checked" />&nbsp;02 AM</label>
+                                        </td>
+                                        <td style="width: 16.66%">
+                                            <label><input class="fhour" id="Checkbox3" type="checkbox" checked="checked" />&nbsp;03 AM</label>
+                                        </td>
+                                        <td style="width: 16.66%">
+                                            <label><input class="fhour" id="h4" type="checkbox" checked="checked" />&nbsp;04 AM</label>
+                                        </td>
+                                        <td style="width: 16.66%">
+                                            <label><input class="fhour" id="h5" type="checkbox" checked="checked" />&nbsp;05 AM</label>
+                                        </td>
+                                        <td style="width: 16.66%">
+                                            <label><input class="fhour" id="h6" type="checkbox" checked="checked" />&nbsp;06 AM</label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 16.66%">
+                                            <label><input class="fhour" id="h7" type="checkbox" checked="checked" />&nbsp;07 AM</label>
+                                        </td>
+                                        <td style="width: 16.66%">
+                                            <label><input class="fhour" id="h8" type="checkbox" checked="checked" />&nbsp;08 AM</label>
+                                        </td>
+                                        <td style="width: 16.66%">
+                                            <label><input class="fhour" id="h9" type="checkbox" checked="checked" />&nbsp;09 AM</label>
+                                        </td>
+                                        <td style="width: 16.66%">
+                                            <label><input class="fhour" id="h10" type="checkbox" checked="checked" />&nbsp;10 AM</label>
+                                        </td>
+                                        <td style="width: 16.66%">
+                                            <label><input class="fhour" id="h11" type="checkbox" checked="checked" />&nbsp;11 AM</label>
+                                        </td>
+                                        <td style="width: 16.66%">
+                                            <label><input class="fhour" id="h12" type="checkbox" checked="checked" />&nbsp;12 AM</label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 16.66%">
+                                            <label><input class="fhour" id="h13" type="checkbox" checked="checked" />&nbsp;01 PM</label>
+                                        </td>
+                                        <td style="width: 16.66%">
+                                            <label><input class="fhour" id="h14" type="checkbox" checked="checked" />&nbsp;02 PM</label>
+                                        </td>
+                                        <td style="width: 16.66%">
+                                            <label><input class="fhour" id="h15" type="checkbox" checked="checked" />&nbsp;03 PM</label>
+                                        </td>
+                                        <td style="width: 16.66%">
+                                            <label><input class="fhour" id="h16" type="checkbox" checked="checked" />&nbsp;04 PM</label>
+                                        </td>
+                                        <td style="width: 16.66%">
+                                            <label><input class="fhour" id="h17" type="checkbox" checked="checked" />&nbsp;05 PM</label>
+                                        </td>
+                                        <td style="width: 16.66%">
+                                            <label><input class="fhour" id="h18" type="checkbox" checked="checked" />&nbsp;06 PM</label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 16.66%">
+                                            <label><input class="fhour" id="h19" type="checkbox" checked="checked" />&nbsp;07 PM</label>
+                                        </td>
+                                        <td style="width: 16.66%">
+                                            <label><input class="fhour" id="h20" type="checkbox" checked="checked" />&nbsp;08 PM</label>
+                                        </td>
+                                        <td style="width: 16.66%">
+                                            <label><input class="fhour" id="h21" type="checkbox" checked="checked" />&nbsp;09 PM</label>
+                                        </td>
+                                        <td style="width: 16.66%">
+                                            <label><input class="fhour" id="h22" type="checkbox" checked="checked" />&nbsp;10 PM</label>
+                                        </td>
+                                        <td style="width: 16.66%">
+                                            <label><input class="fhour" id="h23" type="checkbox" checked="checked" />&nbsp;11 PM</label>
+                                        </td>
+                                        <td style="width: 16.66%">
+                                            <label><input class="fhour" id="h24" type="checkbox" checked="checked" />&nbsp;12 PM</label>
+                                        </td>
+                                    </tr>
+
+                                </table>
+                                -->
+                            </div>
+
+
+
+                            <!-- spatial tab -->
+                            <div role="tabpanel" class="tab-pane tabBody" id="tabSpatial">
+                                <table style="width: 100%">
+                                    <tr>
+                                        <td style="width: 30%; vertical-align: top">
+                                            <div id="home" class="tab-pane fade in active">
+                                                <div style="display: none">
+                                                    Spatial Filter:
+                                                    <br>
+                                                    <select class="input-mini tabbedControl form-control" id="spatFilter" onchange="testFilterFunc();">
+                                                        <option value="">None</option>
+                                                        <option selected value="within">Within</option>
+                                                    </select>
+                                                    <br>
+                                                </div>
+                                                <div>
+                                                    <span style="width: 50px; float: left; padding-top: 4px">East: </span>
+                                                    <span>
+                                                        <input type="text" class="input-mini tabbedControl tabbedControl form-control" id="coordX1" value="-130" /></span>
+                                                </div>
+                                                <div style="height: 13px;"></div>
+
+                                                <div>
+                                                    <span style="width: 50px; float: left; padding-top: 4px">South: </span>
+                                                    <span>
+                                                        <input type="text" class="input-mini tabbedControl form-control" id="coordY1" value="-80" /></span>
+                                                </div>
+                                                <div style="height: 13px;"></div>
+
+                                                <div>
+                                                    <span style="width: 50px; float: left; padding-top: 4px">West: </span>
+                                                    <span>
+                                                        <input type="text" class="input-mini tabbedControl form-control" id="coordX2" value="130" /></span>
+                                                </div>
+                                                <div style="height: 13px;"></div>
+
+                                                <div>
+                                                    <span style="width: 50px; float: left; padding-top: 4px">North: </span>
+                                                    <span style="left: 220px">
+                                                        <input type="text" class="input-mini tabbedControl form-control" id="coordY2" value="80" /></span>
+                                                </div>
+                                                <div style="height: 13px;"></div>
+
+                                                <input type="button" class="btn btn-sm btn-default" value="Reset" style="width: 50px" onclick="resetSpat();" />
+
+                                                <input type="hidden" id="coordCX" value="24" />
+                                                <input type="hidden" id="coordCY" value="-6" />
+                                                <input type="hidden" id="coordZM" value="1" />
+
+                                            </div>
+                                        </td>
+                                        <td>&nbsp;&nbsp;&nbsp;&nbsp;
+                                        </td>
+                                        <td style="vertical-align: top; width: 70%">
+                                            <iframe src="dragmap.aspx" id="dragmap" name="dragmap" style="border: 1px solid #f0f0f0; border-radius: 6px; width: 100%; height: 350px"></iframe>
+                                        </td>
+                                    </tr>
+                                </table>
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+                    <div class='modal-footer'>
+                        <button type='button' class='btn' onclick="hideFilterDialog();"  style="width: 80px">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <iframe id="saveframe" name="saveframe" width="0" height="0" style="display: none; visibility: hidden"></iframe>
+</body>
+</html>

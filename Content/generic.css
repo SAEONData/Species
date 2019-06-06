@@ -1,0 +1,20 @@
+
+.fixedButton {
+    width: 70px;
+}
+
+#taxonDialog .modal-dialog
+{
+    width: 1000px; /* your width */
+}
+
+#dlgSelectSpecies .modal-dialog
+{
+    width: 800px; /* your width */
+}
+
+#dlgSelectTaxonomy .modal-dialog
+{
+    width: 400px; /* your width */
+}
+

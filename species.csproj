@@ -1,0 +1,592 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{48B2B241-9BD7-4B54-8D28-B3963534A1B6}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>species</RootNamespace>
+    <AssemblyName>species</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <UseIISExpress>false</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="DocX">
+      <HintPath>..\..\GSDF\packages\DocX.1.0.0.13\lib\net40\DocX.dll</HintPath>
+    </Reference>
+    <Reference Include="Excel">
+      <HintPath>..\..\SeabirdAtlas\Seabirds\libs\Excel.dll</HintPath>
+    </Reference>
+    <Reference Include="Ionic.Utils.Zip">
+      <HintPath>..\..\saeon\SaeonSLD\bin\Release\Ionic.Utils.Zip.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Net.SourceForge.Koogra">
+      <HintPath>..\..\saeon\SaeonSLD\bin\Release\Net.SourceForge.Koogra.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Helpers, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="about.aspx" />
+    <Content Include="adminIndicators.aspx" />
+    <Content Include="adminSurveyTypes.aspx" />
+    <Content Include="adminUnits.aspx" />
+    <Content Include="adminVocabularies.aspx" />
+    <Content Include="ajax.aspx" />
+    <Content Include="catalouge.aspx" />
+    <Content Include="Content\bootstrap-modal-bs3patch.css" />
+    <Content Include="Content\bootstrap-modal.css" />
+    <Content Include="Content\bootstrap-theme.css" />
+    <Content Include="Content\bootstrap-theme.min.css" />
+    <Content Include="Content\bootstrap-timepicker.min.css" />
+    <Content Include="Content\bootstrap.css" />
+    <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\datepicker.css" />
+    <Content Include="Content\datetimepicker.min.css" />
+    <Content Include="Content\generic.css" />
+    <Content Include="Content\jquery.Jcrop.min.css" />
+    <Content Include="default.aspx" />
+    <Content Include="docSearch.aspx" />
+    <Content Include="dragmap.aspx" />
+    <Content Include="eventIndicators.aspx" />
+    <Content Include="eventspecies.aspx" />
+    <Content Include="events.aspx" />
+    <Content Include="fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Global.asax" />
+    <Content Include="ic.aspx" />
+    <Content Include="import.aspx" />
+    <Content Include="importSpeciesLookup.aspx" />
+    <Content Include="isheet.aspx" />
+    <Content Include="loadPortalFolder.aspx" />
+    <Content Include="map.aspx" />
+    <Content Include="mapframe.aspx" />
+    <Content Include="mapprint.aspx" />
+    <Content Include="media.aspx" />
+    <Content Include="mediacap.aspx" />
+    <Content Include="mediaimp.aspx" />
+    <Content Include="packages.config" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\bootstrap-theme.css.map" />
+    <Content Include="Content\bootstrap.css.map" />
+    <Content Include="ajaxSpecies.ashx" />
+    <None Include="Scripts\jquery-2.1.3.intellisense.js" />
+    <Content Include="parsemedia.aspx" />
+    <Content Include="parsemedia2.aspx" />
+    <Content Include="photobox.aspx" />
+    <Content Include="publisher.aspx" />
+    <Content Include="renderbox.aspx" />
+    <Content Include="repman.aspx" />
+    <Content Include="savecsv.aspx" />
+    <Content Include="Scripts\bootstrap-datepicker.js" />
+    <Content Include="Scripts\bootstrap-modal.js" />
+    <Content Include="Scripts\bootstrap-modalmanager.js" />
+    <Content Include="Scripts\bootstrap-timepicker.js" />
+    <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\busyindicator.js" />
+    <Content Include="Scripts\dateformat.js" />
+    <Content Include="Scripts\datetimepicker.js" />
+    <Content Include="Scripts\generic.js" />
+    <Content Include="Scripts\jquery-2.1.3.js" />
+    <Content Include="Scripts\jquery-2.1.3.min.js" />
+    <Content Include="Scripts\jquery.Jcrop.js" />
+    <Content Include="Scripts\jquery.Jcrop.min.js" />
+    <Content Include="Scripts\moment.js" />
+    <Content Include="Scripts\npm.js" />
+    <Content Include="search.aspx" />
+    <Content Include="Service References\Worms\configuration91.svcinfo" />
+    <Content Include="Service References\Worms\configuration.svcinfo" />
+    <Content Include="Service References\Worms\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </Content>
+    <Content Include="species.aspx" />
+    <Content Include="speciesmap.aspx" />
+    <Content Include="speciesmedia.aspx" />
+    <Content Include="stations.aspx" />
+    <Content Include="survey.aspx" />
+    <Content Include="surveyTypeIndicators.aspx" />
+    <Content Include="taxon.aspx" />
+    <Content Include="taxonlist.aspx" />
+    <Content Include="templates.aspx" />
+    <Content Include="test.html" />
+    <Content Include="trawl.aspx" />
+    <Content Include="tt_taxon.aspx" />
+    <Content Include="Web.config" />
+    <Content Include="Scripts\jquery-2.1.3.min.map" />
+    <Content Include="Service References\Worms\aphia.wsdl" />
+    <Content Include="Service References\Worms\species.Worms.AphiaRecord.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\Worms\species.Worms.Classification.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\Worms\species.Worms.Source.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\Worms\species.Worms.Vernacular.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="WebForm1.aspx" />
+    <Content Include="wm.aspx" />
+    <Content Include="worms.ashx" />
+    <Content Include="UploadHandler.ashx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="about.aspx.cs">
+      <DependentUpon>about.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="about.aspx.designer.cs">
+      <DependentUpon>about.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="adminIndicators.aspx.cs">
+      <DependentUpon>adminIndicators.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="adminIndicators.aspx.designer.cs">
+      <DependentUpon>adminIndicators.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="adminSurveyTypes.aspx.cs">
+      <DependentUpon>adminSurveyTypes.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="adminSurveyTypes.aspx.designer.cs">
+      <DependentUpon>adminSurveyTypes.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="adminUnits.aspx.cs">
+      <DependentUpon>adminUnits.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="adminUnits.aspx.designer.cs">
+      <DependentUpon>adminUnits.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="adminVocabularies.aspx.cs">
+      <DependentUpon>adminVocabularies.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="adminVocabularies.aspx.designer.cs">
+      <DependentUpon>adminVocabularies.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ajax.aspx.cs">
+      <DependentUpon>ajax.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ajax.aspx.designer.cs">
+      <DependentUpon>ajax.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ajaxSpecies.ashx.cs">
+      <DependentUpon>ajaxSpecies.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="catalouge.aspx.cs">
+      <DependentUpon>catalouge.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="catalouge.aspx.designer.cs">
+      <DependentUpon>catalouge.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="DataSources.cs" />
+    <Compile Include="dbtools.cs" />
+    <Compile Include="default.aspx.cs">
+      <DependentUpon>default.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="default.aspx.designer.cs">
+      <DependentUpon>default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="docSearch.aspx.cs">
+      <DependentUpon>docSearch.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="dragmap.aspx.cs">
+      <DependentUpon>dragmap.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="dragmap.aspx.designer.cs">
+      <DependentUpon>dragmap.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="eventIndicators.aspx.cs">
+      <DependentUpon>eventIndicators.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="eventIndicators.aspx.designer.cs">
+      <DependentUpon>eventIndicators.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="eventspecies.aspx.cs">
+      <DependentUpon>eventspecies.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="eventspecies.aspx.designer.cs">
+      <DependentUpon>eventspecies.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="events.aspx.cs">
+      <DependentUpon>events.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="events.aspx.designer.cs">
+      <DependentUpon>events.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="filtertools.cs" />
+    <Compile Include="GenericList.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Global.cs" />
+    <Compile Include="ic.aspx.cs">
+      <DependentUpon>ic.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ic.aspx.designer.cs">
+      <DependentUpon>ic.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="import.aspx.cs">
+      <DependentUpon>import.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="import.aspx.designer.cs">
+      <DependentUpon>import.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="importSpeciesLookup.aspx.cs">
+      <DependentUpon>importSpeciesLookup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="importSpeciesLookup.aspx.designer.cs">
+      <DependentUpon>importSpeciesLookup.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="isheet.aspx.cs">
+      <DependentUpon>isheet.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="isheet.aspx.designer.cs">
+      <DependentUpon>isheet.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="jsresponse.cs" />
+    <Compile Include="js_list.cs" />
+    <Compile Include="loadPortalFolder.aspx.cs">
+      <DependentUpon>loadPortalFolder.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="loadPortalFolder.aspx.designer.cs">
+      <DependentUpon>loadPortalFolder.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="manEvents.cs" />
+    <Compile Include="manEventSpecies.cs" />
+    <Compile Include="manIndicators.cs" />
+    <Compile Include="manMedia.cs" />
+    <Compile Include="manSpecies.cs" />
+    <Compile Include="manSpeciesMedia.cs" />
+    <Compile Include="manStations.cs" />
+    <Compile Include="manSurveys.cs" />
+    <Compile Include="map.aspx.cs">
+      <DependentUpon>map.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="map.aspx.designer.cs">
+      <DependentUpon>map.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="mapframe.aspx.cs">
+      <DependentUpon>mapframe.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="mapframe.aspx.designer.cs">
+      <DependentUpon>mapframe.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="mapprint.aspx.cs">
+      <DependentUpon>mapprint.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="mapprint.aspx.designer.cs">
+      <DependentUpon>mapprint.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="media.aspx.cs">
+      <DependentUpon>media.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="media.aspx.designer.cs">
+      <DependentUpon>media.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="mediacap.aspx.cs">
+      <DependentUpon>mediacap.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="mediacap.aspx.designer.cs">
+      <DependentUpon>mediacap.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="mediaimp.aspx.cs">
+      <DependentUpon>mediaimp.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="mediaimp.aspx.designer.cs">
+      <DependentUpon>mediaimp.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="parsemedia.aspx.cs">
+      <DependentUpon>parsemedia.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="parsemedia.aspx.designer.cs">
+      <DependentUpon>parsemedia.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="parsemedia2.aspx.cs">
+      <DependentUpon>parsemedia2.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="parsemedia2.aspx.designer.cs">
+      <DependentUpon>parsemedia2.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="photobox.aspx.cs">
+      <DependentUpon>photobox.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="photobox.aspx.designer.cs">
+      <DependentUpon>photobox.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="publisher.aspx.cs">
+      <DependentUpon>publisher.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="publisher.aspx.designer.cs">
+      <DependentUpon>publisher.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="renderbox.aspx.cs">
+      <DependentUpon>renderbox.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="renderbox.aspx.designer.cs">
+      <DependentUpon>renderbox.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="repman.aspx.cs">
+      <DependentUpon>repman.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="repman.aspx.designer.cs">
+      <DependentUpon>repman.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="savecsv.aspx.cs">
+      <DependentUpon>savecsv.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="savecsv.aspx.designer.cs">
+      <DependentUpon>savecsv.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="search.aspx.cs">
+      <DependentUpon>search.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="search.aspx.designer.cs">
+      <DependentUpon>search.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\Worms\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="species.aspx.cs">
+      <DependentUpon>species.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="species.aspx.designer.cs">
+      <DependentUpon>species.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Species.Master.cs">
+      <DependentUpon>Species.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Species.Master.designer.cs">
+      <DependentUpon>Species.Master</DependentUpon>
+    </Compile>
+    <Compile Include="speciesmap.aspx.cs">
+      <DependentUpon>speciesmap.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="speciesmap.aspx.designer.cs">
+      <DependentUpon>speciesmap.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="speciesmedia.aspx.cs">
+      <DependentUpon>speciesmedia.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="speciesmedia.aspx.designer.cs">
+      <DependentUpon>speciesmedia.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="stations.aspx.cs">
+      <DependentUpon>stations.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="stations.aspx.designer.cs">
+      <DependentUpon>stations.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="SuperSQL.cs" />
+    <Compile Include="survey.aspx.cs">
+      <DependentUpon>survey.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="survey.aspx.designer.cs">
+      <DependentUpon>survey.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="surveyTypeIndicators.aspx.cs">
+      <DependentUpon>surveyTypeIndicators.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="surveyTypeIndicators.aspx.designer.cs">
+      <DependentUpon>surveyTypeIndicators.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="taxon.aspx.cs">
+      <DependentUpon>taxon.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="taxon.aspx.designer.cs">
+      <DependentUpon>taxon.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="taxonlist.aspx.cs">
+      <DependentUpon>taxonlist.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="taxonlist.aspx.designer.cs">
+      <DependentUpon>taxonlist.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="templates.aspx.cs">
+      <DependentUpon>templates.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="templates.aspx.designer.cs">
+      <DependentUpon>templates.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="tools.cs" />
+    <Compile Include="trawl.aspx.cs">
+      <DependentUpon>trawl.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="trawl.aspx.designer.cs">
+      <DependentUpon>trawl.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="tt_taxon.aspx.cs">
+      <DependentUpon>tt_taxon.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="tt_taxon.aspx.designer.cs">
+      <DependentUpon>tt_taxon.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="UploadHandler.ashx.cs">
+      <DependentUpon>UploadHandler.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="WebForm1.aspx.cs">
+      <DependentUpon>WebForm1.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="WebForm1.aspx.designer.cs">
+      <DependentUpon>WebForm1.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="wm.aspx.cs">
+      <DependentUpon>wm.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="wm.aspx.designer.cs">
+      <DependentUpon>wm.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="worms.ashx.cs">
+      <DependentUpon>worms.ashx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Species.Master" />
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\Worms\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\dbsource\dbsource.csproj">
+      <Project>{e9f5a6bf-7f0f-4580-aa6a-d1d147a515e3}</Project>
+      <Name>dbsource</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>4167</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>
+          </IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
